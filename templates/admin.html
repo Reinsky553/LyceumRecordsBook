@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Админ-панель</title>
+    <style>
+        body { font-family: sans-serif; background: #eee; padding: 40px; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, textarea, select { width: 100%; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #e74c3c; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Админ-панель</h1>
+
+    <div class="card">
+        <h3>Управление категориями</h3>
+        <form method="POST">
+            <input type="text" name="cat_name" placeholder="Название категории" required>
+            <input type="number" name="cat_order" placeholder="Порядок отображения" required>
+            <button type="submit" name="add_cat">Создать категорию</button>
+        </form>
+        <ul>
+            {% for cat in categories %}
+            <li>{{ cat.name }} (Порядок: {{ cat.display_order }})
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="cat_id" value="{{ cat.id }}">
+                    <button type="submit" name="delete_cat" style="background:none; color:red; padding:0;">[Delete]</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>Добавить страницу</h3>
+        <form method="POST">
+            <select name="cat_id">
+                {% for cat in categories %}<option value="{{ cat.id }}">{{ cat.name }}</option>{% endfor %}
+            </select>
+            <input type="text" name="p_title" placeholder="Название страницы" required>
+            <input type="text" name="p_image" placeholder="URL изображения (необязательно)">
+            <textarea name="p_content" placeholder="Содержание..."></textarea>
+            <input type="number" name="p_order" placeholder="Порядок">
+            <button type="submit" name="add_page">Добавить страницу</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Управление страницами</h3>
+        <table>
+            <tr><th>Категория</th><th>Название</th><th>Действие</th></tr>
+            {% for page in pages %}
+            <tr>
+                <td>{{ page.cat_name }}</td>
+                <td>{{ page.title }}</td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="page_id" value="{{ page.id }}">
+                        <button type="submit" name="delete_page">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Предложенные достижения</h3>
+        <table>
+            <tr>
+                <th>Имя</th>
+                <th>Контакт</th>
+                <th>Категория</th>
+                <th>Описание</th>
+                <th>Действие</th>
+            </tr>
+            {% for sub in submissions %}
+            <tr>
+                <td>{{ sub.name }}</td>
+                <td>{{ sub.contact }}</td>
+                <td>{{ sub.category }}</td>
+                <td>{{ sub.content }}</td>
+                <td>
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="sub_id" value="{{ sub.id }}">
+                        <button type="submit" name="delete_sub" style="background:#c0392b;">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
